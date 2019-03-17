@@ -10,14 +10,15 @@ import java.io.File
 /**
  * Created by KerriGan on 2017/7/12.
  */
-abstract class CropPhotoHelper{
+abstract class CropPhotoHelper {
 
     companion object {
-        @JvmStatic protected val PHOTO_RESULT = 0x1000
+        @JvmStatic
+        protected val PHOTO_RESULT = 0x1000
     }
 
     // 图片缩放
-    fun photoZoom(uri: Uri,fragmentActivity: FragmentActivity,outputPath:String) {
+    fun photoZoom(uri: Uri, fragmentActivity: FragmentActivity, outputPath: String) {
         val intent = Intent("com.android.camera.action.CROP")
         intent.setDataAndType(uri, "image/*")
         intent.putExtra("crop", "true")
@@ -36,4 +37,6 @@ abstract class CropPhotoHelper{
     abstract fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
 
     abstract fun clearCache()
+
+    abstract fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
 }

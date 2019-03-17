@@ -6,8 +6,11 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Environment
+import com.common.utils.image.ImageUtil
 import java.io.*
 import java.lang.Exception
 import java.util.*
@@ -100,9 +103,14 @@ object FileUtil {
             appInfo.sourceDir = app.path
             appInfo.publicSourceDir = app.path
 
-            return (appInfo.loadIcon(pm) as BitmapDrawable).bitmap
+            val appIcon = appInfo.loadIcon(pm)
+            if (appIcon is BitmapDrawable) {
+                return (appInfo.loadIcon(pm) as BitmapDrawable).bitmap
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appIcon is AdaptiveIconDrawable) {
+                val adaptiveIcon = (appInfo.loadIcon(pm) as AdaptiveIconDrawable)
+                return ImageUtil.drawable2Bitmap(adaptiveIcon.background)
+            }
         }
-
         return null
     }
 

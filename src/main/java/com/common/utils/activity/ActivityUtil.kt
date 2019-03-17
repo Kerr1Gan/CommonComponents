@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.app.ActivityManager
+import android.content.ComponentName
 
 
 /**
@@ -15,7 +16,7 @@ object ActivityUtil {
     //Settings.ACTION_APPLICATION_DETAIL_SETTING
     fun getAppDetailSettingIntent(context: Context): Intent {
         var localIntent = Intent()
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         if (Build.VERSION.SDK_INT >= 9) {
             localIntent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             localIntent.setData(Uri.fromParts("package", context.getPackageName(), null))
@@ -25,6 +26,14 @@ object ActivityUtil {
             localIntent.putExtra("com.android.settings.ApplicationPkgName", context.getPackageName())
         }
         return localIntent
+    }
+
+    fun getHotspotSettingIntent(context: Context): Intent {
+        val intent = Intent()
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        //打开网络共享与热点设置页面
+        intent.component = ComponentName("com.android.settings", "com.android.settings.Settings\$TetherSettingsActivity")
+        return intent
     }
 
     /**

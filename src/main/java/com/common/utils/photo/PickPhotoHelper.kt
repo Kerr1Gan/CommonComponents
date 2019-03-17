@@ -12,8 +12,9 @@ import java.io.File
  * Created by KerriGan on 2017/7/12.
  */
 class PickPhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper() {
+
     companion object {
-        val TAKE_PHOTO = 0x1002
+        const val TAKE_PHOTO = 0x1002
     }
 
     private var mActivity: FragmentActivity? = null
@@ -49,4 +50,8 @@ class PickPhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper() {
         val path = Environment.getExternalStorageDirectory().absolutePath
         File(path + "/head.png").delete()
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    }
+
 }
