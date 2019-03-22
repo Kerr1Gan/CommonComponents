@@ -1,5 +1,6 @@
 package com.common.utils.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -7,6 +8,10 @@ import android.os.Build
 import android.provider.Settings
 import android.app.ActivityManager
 import android.content.ComponentName
+import android.graphics.Point
+import android.view.KeyCharacterMap
+import android.view.KeyEvent
+import android.view.ViewConfiguration
 
 
 /**
@@ -94,5 +99,43 @@ object ActivityUtil {
         intent.data = uri
         intent.setPackage(packageName)
         context.startActivity(intent)
+    }
+
+    @JvmStatic
+    fun getStatusBarHeight(context: Context): Int {
+        val resources = context.resources
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return resources.getDimensionPixelSize(resourceId)
+    }
+
+    fun isNavigationBarShow(activity: Activity): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            val display = activity.windowManager.defaultDisplay
+            val size = Point()
+            val realSize = Point()
+            display.getSize(size)
+            display.getRealSize(realSize)
+            return realSize.y != size.y
+        } else {
+            val menu = ViewConfiguration.get(activity).hasPermanentMenuKey()
+            val back = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK)
+            return !(menu || back)
+        }
+    }
+
+    @JvmStatic
+    fun getNavigationBarHeight(activity: Activity): Int {
+        if (!isNavigationBarShow(activity)) {
+            return 0
+        }
+        val resources = activity.resources
+        val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        //获取NavigationBar的高度
+        return resources.getDimensionPixelSize(resourceId)
+    }
+
+    @JvmStatic
+    fun getScreenHeight(activity: Activity): Int {
+        return activity.windowManager.defaultDisplay.height + getNavigationBarHeight(activity)
     }
 }

@@ -11,6 +11,7 @@ import android.view.WindowManager
  */
 object TranslucentUtil {
 
+    @JvmStatic
     fun translucentWindow(activity: Activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)  //去除半透明状态栏
