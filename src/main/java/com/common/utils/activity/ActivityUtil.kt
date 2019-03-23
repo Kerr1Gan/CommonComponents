@@ -201,4 +201,20 @@ object ActivityUtil {
             e.printStackTrace()
         }
     }
+
+    @JvmStatic
+    fun startInstallPermissionSettingActivity(context: Context, packageName: String, requestCode: Int = 0x33) {
+        val intent = Intent()
+        //获取当前apk包URI，并设置到intent中（这一步设置，可让“未知应用权限设置界面”只显示当前应用的设置项）
+        val packageURI = Uri.parse("package:$packageName")
+        intent.data = packageURI
+        //设置不同版本跳转未知应用的动作
+        if (Build.VERSION.SDK_INT >= 26) {
+            //intent = new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,packageURI);
+            intent.action = android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES
+        } else {
+            intent.action = android.provider.Settings.ACTION_SECURITY_SETTINGS
+        }
+        (context as Activity).startActivityForResult(intent, requestCode)
+    }
 }
