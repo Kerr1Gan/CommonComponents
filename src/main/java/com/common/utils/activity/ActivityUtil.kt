@@ -222,9 +222,8 @@ object ActivityUtil {
     @JvmStatic
     fun openApp(context: Context, packageName: String): Boolean {
         try {
-            var pi: PackageInfo? = null
             val packageManager = context.packageManager
-            pi = context.packageManager.getPackageInfo(packageName, 0)
+            val pi = packageManager.getPackageInfo(packageName, 0)
             val resolveIntent = Intent(Intent.ACTION_MAIN, null)
             resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER)
             resolveIntent.setPackage(pi.packageName)
