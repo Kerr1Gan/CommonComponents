@@ -2,17 +2,18 @@ package com.common.utils.activity
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.provider.Settings
 import android.app.ActivityManager
 import android.app.DownloadManager
 import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Point
+import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.util.Log
 import android.view.KeyCharacterMap
@@ -216,5 +217,35 @@ object ActivityUtil {
             intent.action = android.provider.Settings.ACTION_SECURITY_SETTINGS
         }
         (context as Activity).startActivityForResult(intent, requestCode)
+    }
+
+    @JvmStatic
+    fun openApp(context: Context, packageName: String): Boolean {
+        try {
+            var pi: PackageInfo? = null
+            val packageManager = context.packageManager
+            pi = context.packageManager.getPackageInfo(packageName, 0)
+            val resolveIntent = Intent(Intent.ACTION_MAIN, null)
+            resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+            resolveIntent.setPackage(pi.packageName)
+
+            val apps = packageManager.queryIntentActivities(resolveIntent, 0)
+
+            val ri = apps.iterator().next()
+            if (ri != null) {
+                val className = ri.activityInfo.name
+                val intent = Intent(Intent.ACTION_MAIN)
+                intent.addCategory(Intent.CATEGORY_LAUNCHER)
+
+                val cn = ComponentName(packageName, className)
+                intent.component = cn
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+                return true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
     }
 }
