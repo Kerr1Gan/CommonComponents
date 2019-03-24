@@ -220,6 +220,11 @@ object ActivityUtil {
     }
 
     @JvmStatic
+    fun hasIntallPermission(context: Context): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context.packageManager.canRequestPackageInstalls()
+    }
+
+    @JvmStatic
     fun openApp(context: Context, packageName: String): Boolean {
         try {
             val packageManager = context.packageManager
