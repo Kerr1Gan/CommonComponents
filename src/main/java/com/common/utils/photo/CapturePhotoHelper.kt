@@ -6,12 +6,14 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.FileProvider
 import android.text.TextUtils
+import com.common.componentes.BuildConfig
 import com.common.utils.activity.ActivityUtil
 import com.common.utils.file.FileUtil
 import java.io.File
@@ -29,7 +31,7 @@ class CapturePhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper()
         private const val REQUEST_CODE = 10002
     }
 
-    private var authority: String? = null
+    private var authority: String = ""
 
     init {
         mActivity = fragmentActivity
@@ -38,8 +40,13 @@ class CapturePhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == TAKE_PHOTO) {
-                val picture = File(IMAGE_PATH, "temp.jpg")
-                photoZoom(Uri.fromFile(picture), mActivity!!, IMAGE_PATH + "/head.png")
+                val picture = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    FileProvider.getUriForFile(
+                            mActivity, authority, File(IMAGE_PATH, "temp.jpg"))
+                } else {
+                    Uri.fromFile(File(IMAGE_PATH, "temp.jpg"))
+                }
+                photoZoom(picture, mActivity!!, IMAGE_PATH + "/head.png")
             }
 
             if (requestCode == PHOTO_RESULT) {
@@ -55,6 +62,7 @@ class CapturePhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper()
 
 
     fun takePhoto(authority: String) {
+        clearCache()
         this.authority = authority
 
         if (ActivityCompat.checkSelfPermission(mActivity!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -64,10 +72,15 @@ class CapturePhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper()
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.Images.Media.ORIENTATION, 0)
-        val photoUri = FileProvider.getUriForFile(
-                mActivity,
-                this.authority,
-                File(IMAGE_PATH, "temp.jpg"))
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        val photoUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            FileProvider.getUriForFile(
+                    mActivity,
+                    this.authority,
+                    File(IMAGE_PATH, "temp.jpg"))
+        } else {
+            Uri.fromFile(File(IMAGE_PATH, "temp.jpg"))
+        }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
         mActivity?.startActivityForResult(intent, TAKE_PHOTO)
     }

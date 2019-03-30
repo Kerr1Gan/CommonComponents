@@ -18,6 +18,7 @@ class PickPhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper() {
     }
 
     private var mActivity: FragmentActivity? = null
+    private var authority: String = ""
 
     init {
         mActivity = fragmentActivity
@@ -40,7 +41,8 @@ class PickPhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper() {
     }
 
 
-    fun takePhoto() {
+    fun takePhoto(authority: String) {
+        this.authority = authority
         val intent = Intent(Intent.ACTION_PICK, null)
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         mActivity?.startActivityForResult(intent, TAKE_PHOTO)

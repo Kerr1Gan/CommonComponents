@@ -3,8 +3,11 @@ package com.common.utils.photo
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.support.v4.app.FragmentActivity
+import android.support.v4.content.FileProvider
+import com.common.componentes.BuildConfig
 import java.io.File
 
 /**
@@ -31,7 +34,7 @@ abstract class CropPhotoHelper {
         intent.putExtra("return-data", false)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(File(outputPath)))
         intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString())
-        fragmentActivity?.startActivityForResult(intent, PHOTO_RESULT)
+        fragmentActivity.startActivityForResult(intent, PHOTO_RESULT)
     }
 
     abstract fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
