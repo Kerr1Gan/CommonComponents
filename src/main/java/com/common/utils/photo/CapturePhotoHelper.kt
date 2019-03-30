@@ -72,7 +72,7 @@ class CapturePhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper()
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.Images.Media.ORIENTATION, 0)
-//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         val photoUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             FileProvider.getUriForFile(
                     mActivity,

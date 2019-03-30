@@ -32,6 +32,7 @@ abstract class CropPhotoHelper {
         intent.putExtra("outputX", 200)
         intent.putExtra("outputY", 200)
         intent.putExtra("return-data", false)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(File(outputPath)))
         intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString())
         fragmentActivity.startActivityForResult(intent, PHOTO_RESULT)
