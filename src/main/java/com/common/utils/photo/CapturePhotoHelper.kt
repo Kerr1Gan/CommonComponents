@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.FileProvider
 import android.text.TextUtils
+import android.widget.Toast
 import com.common.componentes.BuildConfig
 import com.common.utils.activity.ActivityUtil
 import com.common.utils.file.FileUtil
@@ -103,7 +104,12 @@ class CapturePhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper()
                 builder.setTitle("Warn")
                         .setMessage("Need to get camera permission.")
                         .setPositiveButton(android.R.string.ok) { dialog, which ->
-                            act.startActivity(ActivityUtil.getAppDetailSettingIntent(act))
+                            try {
+                                act.startActivity(ActivityUtil.getAppDetailSettingIntent(act))
+                            } catch (ex: Exception) {
+                                ex.printStackTrace()
+                                Toast.makeText(act, "Need to uninstall and reinstall and give permission to use properly", Toast.LENGTH_LONG).show()
+                            }
                         }
                 builder.show()
             }
