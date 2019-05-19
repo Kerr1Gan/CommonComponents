@@ -13,18 +13,17 @@ import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 
 
-
 /**
  * Created by KerriGan on 2017/7/11.
  */
 
-object ImageUtil{
+object ImageUtil {
     @JvmStatic
-    fun saveBitmap(bitmap:Bitmap, path:String, format: Bitmap.CompressFormat, quality:Int):Boolean{
+    fun saveBitmap(bitmap: Bitmap, path: String, format: Bitmap.CompressFormat, quality: Int): Boolean {
         try {
-            bitmap.compress(format,quality,FileOutputStream(path))
+            bitmap.compress(format, quality, FileOutputStream(path))
             return true
-        }catch (e:Exception){
+        } catch (e: Exception) {
             return false
         }
     }
@@ -67,7 +66,10 @@ object ImageUtil{
     }
 
     @JvmStatic
-    fun drawable2Bitmap(drawable: Drawable): Bitmap {
+    fun drawable2Bitmap(drawable: Drawable): Bitmap? {
+        if (drawable.intrinsicWidth == 0 || drawable.intrinsicHeight == 0) {
+            return null
+        }
         val bitmap = Bitmap.createBitmap(
                 drawable.intrinsicWidth,
                 drawable.intrinsicHeight,
