@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Environment
 import com.common.utils.image.ImageUtil
@@ -106,9 +107,13 @@ object FileUtil {
             val appIcon = appInfo.loadIcon(pm)
             if (appIcon is BitmapDrawable) {
                 return (appInfo.loadIcon(pm) as BitmapDrawable).bitmap
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appIcon is AdaptiveIconDrawable) {
-                val adaptiveIcon = (appInfo.loadIcon(pm) as AdaptiveIconDrawable)
-                return ImageUtil.drawable2Bitmap(adaptiveIcon.background)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                return if (appIcon is AdaptiveIconDrawable) {
+                    val adaptiveIcon = (appInfo.loadIcon(pm) as AdaptiveIconDrawable)
+                    ImageUtil.drawable2Bitmap(adaptiveIcon)
+                } else {
+                    (appInfo.loadIcon(pm) as BitmapDrawable).bitmap
+                }
             }
         }
         return null
@@ -564,6 +569,36 @@ object FileUtil {
             }
         }
         return retArray
+    }
+
+    /** * 获取apk包的信息：版本号，名称，图标等 * @param absPath apk包的绝对路径 * @param context */
+    fun getApkInfo(context: Context, absPath: String): String {
+        val pm = context.packageManager
+        val pkgInfo = pm.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
+        if (pkgInfo != null) {
+            val appInfo = pkgInfo.applicationInfo; /* 必须加这两句，不然下面icon获取是default icon而不是应用包的icon */
+            appInfo.sourceDir = absPath
+            appInfo.publicSourceDir = absPath
+            val appName = pm.getApplicationLabel(appInfo).toString()// 得到应用名
+            val packageName = appInfo.packageName // 得到包名
+            val version = pkgInfo.versionName // 得到版本信息 /* icon1和icon2其实是一样的 */
+            val icon1 = pm.getApplicationIcon(appInfo)// 得到图标信息
+            val icon2 = appInfo.loadIcon(pm)
+            return appName
+        }
+        return ""
+    }
+
+    fun getApkIcon(context: Context, absPath: String): Drawable? {
+        val pm = context.packageManager
+        val pkgInfo = pm.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
+        if (pkgInfo != null) {
+            val appInfo = pkgInfo.applicationInfo;
+            appInfo.sourceDir = absPath
+            appInfo.publicSourceDir = absPath
+            return pm.getApplicationIcon(appInfo)// 得到图标信息
+        }
+        return null
     }
 }
 
