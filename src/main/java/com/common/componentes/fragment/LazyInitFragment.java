@@ -46,4 +46,8 @@ public class LazyInitFragment extends Fragment {
     public void onUserVisibleHintChanged(boolean isVisibleToUser) {
         Log.i(TAG, "onUserVisibleHintChanged " + isVisibleToUser);
     }
+
+    public Handler getHandler() {
+        return mHandler;
+    }
 }
