@@ -13,15 +13,12 @@ public class LazyInitFragment extends Fragment {
 
     private static final String TAG = "LazyInitFragment";
 
-    private Handler mHandler;
+    private Handler mHandler = new Handler();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        if (mHandler == null) {
-            mHandler = new Handler();
-        }
     }
 
     @Nullable
