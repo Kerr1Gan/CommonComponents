@@ -24,7 +24,7 @@ import java.io.File
  * Created by KerriGan on 2017/7/11.
  */
 class CapturePhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper() {
-    private var mActivity: FragmentActivity? = null
+    private var mActivity: FragmentActivity
 
     companion object {
         private const val TAKE_PHOTO = 0x1001

@@ -6,10 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Point
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.os.*
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyCharacterMap
@@ -21,15 +18,19 @@ import com.common.componentes.WeakHandler
 /**
  * Created by KeriGan on 2017/6/25.
  */
+const val KEY_VIEW_BUNDLE = "key_view_bundle"
+
 abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMessage {
 
     private var mLocalBroadcastManger: LocalBroadcastManager? = null
 
-    private var mIntentFilter: IntentFilter? = null
+    private lateinit var mIntentFilter: IntentFilter
 
-    private var mBroadcastReceiver: SimpleReceiver? = null
+    private lateinit var mBroadcastReceiver: SimpleReceiver
 
-    private var mSimpleHandler: SimpleHandler? = null
+    private lateinit var mSimpleHandler: SimpleHandler
+
+    private lateinit var bundle: Bundle
 
     companion object {
         const val NAVIGATION_BAR_HEIGHT = "navigation_bar_height"
@@ -46,6 +47,18 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
             mLocalBroadcastManger?.registerReceiver(mBroadcastReceiver, mIntentFilter)
         }
         mSimpleHandler = SimpleHandler(this)
+
+        bundle = Bundle()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putBundle(KEY_VIEW_BUNDLE, bundle)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        bundle = savedInstanceState?.getBundle(KEY_VIEW_BUNDLE) ?: bundle
     }
 
     override fun onResume() {
