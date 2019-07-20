@@ -28,6 +28,7 @@ import java.io.File
  */
 object ActivityUtil {
     //Settings.ACTION_APPLICATION_DETAIL_SETTING
+    @JvmStatic
     fun getAppDetailSettingIntent(context: Context): Intent {
         var localIntent = Intent()
         localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -42,6 +43,7 @@ object ActivityUtil {
         return localIntent
     }
 
+    @JvmStatic
     fun getHotspotSettingIntent(context: Context): Intent {
         val intent = Intent()
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -54,6 +56,7 @@ object ActivityUtil {
      * 程序是否在前台运行
      *
      */
+    @JvmStatic
     fun isAppOnForeground(context: Context): Boolean {
         val activityManager = context.getApplicationContext()
                 .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -80,9 +83,14 @@ object ActivityUtil {
      * @param marketPkg
      * ：应用市场的包名
      */
+    @JvmStatic
     @Throws(Exception::class)
     fun jumpToMarket(context: Context, appPkg: String, marketPkg: String? = null) {
-        val uri = Uri.parse("market://details?id=$appPkg")
+        val uri = if (appPkg.startsWith("http")) {
+            Uri.parse(appPkg)
+        } else {
+            Uri.parse("market://details?id=$appPkg")
+        }
         val intent = Intent(Intent.ACTION_VIEW, uri)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         if (marketPkg != null) {// 如果没给市场的包名，则系统会弹出市场的列表让你进行选择。
@@ -91,6 +99,7 @@ object ActivityUtil {
         context.startActivity(intent)
     }
 
+    @JvmStatic
     @Throws(Exception::class)
     fun openUrlByBrowser(context: Context, url: String) {
         val intent = Intent()
@@ -100,6 +109,7 @@ object ActivityUtil {
         context.startActivity(intent)
     }
 
+    @JvmStatic
     @Throws(Exception::class)
     fun openUrlByTargetBrowser(context: Context, url: String, packageName: String) {
         val intent = Intent()
@@ -117,6 +127,7 @@ object ActivityUtil {
         return resources.getDimensionPixelSize(resourceId)
     }
 
+    @JvmStatic
     fun isNavigationBarShow(activity: Activity): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             val display = activity.windowManager.defaultDisplay
