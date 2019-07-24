@@ -44,6 +44,21 @@ object ActivityUtil {
     }
 
     @JvmStatic
+    fun go2AppDetailSettingIntent(context: Context, packageName: String): Intent {
+        var localIntent = Intent()
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (Build.VERSION.SDK_INT >= 9) {
+            localIntent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            localIntent.setData(Uri.fromParts("package", packageName, null))
+        } else if (Build.VERSION.SDK_INT <= 8) {
+            localIntent.setAction(Intent.ACTION_VIEW)
+            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails")
+            localIntent.putExtra("com.android.settings.ApplicationPkgName", packageName)
+        }
+        return localIntent
+    }
+
+    @JvmStatic
     fun getHotspotSettingIntent(context: Context): Intent {
         val intent = Intent()
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -260,6 +275,20 @@ object ActivityUtil {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+        return false
+    }
+
+    @JvmStatic
+    fun uninstallApp(ctx: Context, packageName: String): Boolean {
+        try {
+            val intent = Intent(Intent.ACTION_DELETE)
+            intent.data = Uri.parse("package:$packageName")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            ctx.startActivity(intent)
+            return true
+        } catch (ex: Exception) {
+            ex.printStackTrace()
         }
         return false
     }

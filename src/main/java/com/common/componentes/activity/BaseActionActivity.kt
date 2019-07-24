@@ -30,7 +30,7 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
 
     private lateinit var mSimpleHandler: SimpleHandler
 
-    private lateinit var bundle: Bundle
+    protected lateinit var stateBundle: Bundle
 
     companion object {
         const val NAVIGATION_BAR_HEIGHT = "navigation_bar_height"
@@ -48,17 +48,17 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
         }
         mSimpleHandler = SimpleHandler(this)
 
-        bundle = Bundle()
+        stateBundle = Bundle()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState?.putBundle(KEY_VIEW_BUNDLE, bundle)
+        outState?.putBundle(KEY_VIEW_BUNDLE, stateBundle)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        bundle = savedInstanceState?.getBundle(KEY_VIEW_BUNDLE) ?: bundle
+        stateBundle = savedInstanceState?.getBundle(KEY_VIEW_BUNDLE) ?: stateBundle
     }
 
     override fun onResume() {
