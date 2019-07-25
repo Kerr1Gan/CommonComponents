@@ -292,4 +292,19 @@ object ActivityUtil {
         }
         return false
     }
+
+    @JvmStatic
+    fun checkAppInstalled(context: Context, pkgName: String): Boolean {
+        val packageManager = context.packageManager
+        val info = packageManager.getInstalledPackages(0)
+        if (info == null || info.isEmpty())
+            return false
+
+        for (i in 0 until info.size) {
+            if (pkgName.equals(info.get(i).packageName)) {
+                return true
+            }
+        }
+        return false
+    }
 }
