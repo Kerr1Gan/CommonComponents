@@ -103,6 +103,7 @@ object ActivityUtil {
         val uri = if (appPkg.startsWith("http")) {
             Uri.parse(appPkg)
         } else {
+            // 仅仅只有market schema的能传递referrer到google play
             Uri.parse("market://details?id=$appPkg")
         }
         val intent = Intent(Intent.ACTION_VIEW, uri)
