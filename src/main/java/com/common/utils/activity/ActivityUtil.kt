@@ -7,7 +7,6 @@ import android.app.DownloadManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Point
 import android.net.Uri
@@ -106,6 +105,18 @@ object ActivityUtil {
         } else {
             Uri.parse("market://details?id=$appPkg")
         }
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (marketPkg != null) {// 如果没给市场的包名，则系统会弹出市场的列表让你进行选择。
+            intent.`package` = marketPkg
+        }
+        context.startActivity(intent)
+    }
+
+    @JvmStatic
+    @Throws(Exception::class)
+    fun jumpToMarketByUrl(context: Context, url: String, marketPkg: String? = null) {
+        val uri = Uri.parse(url)
         val intent = Intent(Intent.ACTION_VIEW, uri)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         if (marketPkg != null) {// 如果没给市场的包名，则系统会弹出市场的列表让你进行选择。
