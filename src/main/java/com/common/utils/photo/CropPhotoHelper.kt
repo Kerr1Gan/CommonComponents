@@ -5,8 +5,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.support.v4.app.FragmentActivity
-import android.support.v4.content.FileProvider
+import androidx.fragment.app.FragmentActivity
+import androidx.core.content.FileProvider
 import com.common.componentes.BuildConfig
 import java.io.File
 
@@ -21,7 +21,7 @@ abstract class CropPhotoHelper {
     }
 
     // 图片缩放
-    fun photoZoom(uri: Uri, fragmentActivity: FragmentActivity, outputPath: String) {
+    fun photoZoom(uri: Uri, fragmentActivity: androidx.fragment.app.FragmentActivity, outputPath: String) {
         val intent = Intent("com.android.camera.action.CROP")
         intent.setDataAndType(uri, "image/*")
         intent.putExtra("crop", "true")

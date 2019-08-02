@@ -9,9 +9,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.FragmentActivity
-import android.support.v4.content.FileProvider
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.core.content.FileProvider
 import android.text.TextUtils
 import android.widget.Toast
 import com.common.componentes.BuildConfig
@@ -23,8 +23,8 @@ import java.io.File
 /**
  * Created by KerriGan on 2017/7/11.
  */
-class CapturePhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper() {
-    private var mActivity: FragmentActivity
+class CapturePhotoHelper(fragmentActivity: androidx.fragment.app.FragmentActivity) : CropPhotoHelper() {
+    private var mActivity: androidx.fragment.app.FragmentActivity
 
     companion object {
         private const val TAKE_PHOTO = 0x1001

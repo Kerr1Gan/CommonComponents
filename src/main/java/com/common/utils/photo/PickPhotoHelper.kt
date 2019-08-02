@@ -4,20 +4,20 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 import com.common.utils.file.FileUtil
 import java.io.File
 
 /**
  * Created by KerriGan on 2017/7/12.
  */
-class PickPhotoHelper(fragmentActivity: FragmentActivity) : CropPhotoHelper() {
+class PickPhotoHelper(fragmentActivity: androidx.fragment.app.FragmentActivity) : CropPhotoHelper() {
 
     companion object {
         const val TAKE_PHOTO = 0x1002
     }
 
-    private var mActivity: FragmentActivity? = null
+    private var mActivity: androidx.fragment.app.FragmentActivity? = null
     private var authority: String = ""
 
     init {

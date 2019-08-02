@@ -7,8 +7,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Point
 import android.os.*
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.appcompat.app.AppCompatActivity
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.ViewConfiguration
@@ -22,7 +22,7 @@ const val KEY_VIEW_BUNDLE = "key_view_bundle"
 
 abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMessage {
 
-    private var mLocalBroadcastManger: LocalBroadcastManager? = null
+    private var mLocalBroadcastManger: androidx.localbroadcastmanager.content.LocalBroadcastManager? = null
 
     private lateinit var mIntentFilter: IntentFilter
 
@@ -39,7 +39,7 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLocalBroadcastManger = LocalBroadcastManager.getInstance(this)
+        mLocalBroadcastManger = androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this)
         if (isRegisterActions()) {
             mIntentFilter = IntentFilter()
             mBroadcastReceiver = SimpleReceiver()
