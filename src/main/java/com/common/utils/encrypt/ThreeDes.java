@@ -23,7 +23,7 @@ public class ThreeDes {
      */
 
     private static final String ALGORITHM = "DESede"; //定义加密算法,可用 DES,DESede,Blowfish
-    private static final String DEFAULT_KEY = "galaxylab";
+    public static final String DEFAULT_KEY = "galaxylabteamxqc20190805";
 
     //keyByte为加密密钥，长度为24字节
     //src为被加密的数据缓冲区（源）
