@@ -17,6 +17,7 @@ import com.ethan.and.ui.web.SimpleWebViewClient
 import com.common.utils.activity.ActivityUtil
 import com.common.utils.file.FileUtil
 import java.io.File
+import java.lang.Exception
 
 
 /**
@@ -134,6 +135,15 @@ class WebViewFragment : Fragment() {
         @JavascriptInterface
         fun gotoAppDetailSettings() {
             context.startActivity(ActivityUtil.getAppDetailSettingIntent(context))
+        }
+
+        @JavascriptInterface
+        fun gotoGPDetail() {
+            try {
+                ActivityUtil.jumpToMarket(context, context.packageName, "com.android.vending")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }
