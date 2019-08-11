@@ -18,6 +18,7 @@ package com.common.executor;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executor;
@@ -43,6 +44,10 @@ public class AppExecutors {
         this.diskIO = diskIO;
         this.networkIO = networkIO;
         this.mainThread = mainThread;
+    }
+
+    public AppExecutors(int networkIOSize) {
+        this(new DiskIOThreadExecutor(), Executors.newFixedThreadPool(networkIOSize), new MainThreadExecutor());
     }
 
     public AppExecutors() {
