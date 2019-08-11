@@ -1,4 +1,4 @@
-package com.ethan.and.ui.web
+package com.common.componentes.fragment
 
 import android.webkit.WebChromeClient
 

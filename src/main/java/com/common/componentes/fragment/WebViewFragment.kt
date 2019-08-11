@@ -12,8 +12,6 @@ import android.webkit.JavascriptInterface
 import android.webkit.MimeTypeMap
 import android.webkit.WebView
 import com.common.componentes.R
-import com.ethan.and.ui.web.SimpleWebChromeClient
-import com.ethan.and.ui.web.SimpleWebViewClient
 import com.common.utils.activity.ActivityUtil
 import com.common.utils.file.FileUtil
 import java.io.File
