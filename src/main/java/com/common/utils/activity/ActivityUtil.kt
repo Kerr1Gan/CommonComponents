@@ -319,4 +319,16 @@ object ActivityUtil {
         }
         return false
     }
+
+    @JvmStatic
+    fun sendMailIntent(context: Context, mailTo: String, subject: String, text: String, chooseActivityTitle: String): Intent {
+        val email = arrayOf(mailTo) // 需要注意，email必须以数组形式传入
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "message/rfc822" // 设置邮件格式
+        intent.putExtra(Intent.EXTRA_EMAIL, email) // 接收人
+        //intent.putExtra(Intent.EXTRA_CC, email) // 抄送人
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject) // 主题
+        intent.putExtra(Intent.EXTRA_TEXT, text) // 正文
+        return Intent.createChooser(intent, chooseActivityTitle)
+    }
 }
