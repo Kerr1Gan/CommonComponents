@@ -1,7 +1,9 @@
 package com.common.componentes.fragment
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.util.Log
@@ -100,17 +102,37 @@ class WebViewFragment : Fragment() {
     private fun initWebView() {
         mWebView = view?.findViewById<View>(R.id.web_view) as WebView?
         mWebView?.webViewClient = object : SimpleWebViewClient() {
-            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+            override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
                 super.onReceivedError(view, errorCode, description, failingUrl)
-                view?.loadUrl("about:blank")
+                view.loadUrl("about:blank")
             }
 
-            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
                 super.onReceivedError(view, request, error)
-                //view?.loadUrl("about:blank")
+            }
+
+            @TargetApi(android.os.Build.VERSION_CODES.M)
+            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
+                super.onReceivedHttpError(view, request, errorResponse)
+                // 这个方法在6.0才出现
+                val statusCode = errorResponse.statusCode
+                println("onReceivedHttpError code = $statusCode")
+                if (404 == statusCode || 500 == statusCode) {
+                    view.loadUrl("about:blank")// 避免出现默认的错误界面
+                }
             }
         }
-        mWebView?.setWebChromeClient(SimpleWebChromeClient())
+        mWebView?.setWebChromeClient(object : SimpleWebChromeClient() {
+            override fun onReceivedTitle(view: WebView, title: String) {
+                super.onReceivedTitle(view, title)
+                // android 6.0 以下通过title获取
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    if (title.contains("404") || title.contains("500") || title.toLowerCase().contains("error")) {
+                        view.loadUrl("about:blank")// 避免出现默认的错误界面
+                    }
+                }
+            }
+        })
 
         val settings = mWebView?.getSettings()
         settings?.javaScriptEnabled = true
