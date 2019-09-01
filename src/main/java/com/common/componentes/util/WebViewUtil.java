@@ -2,6 +2,7 @@ package com.common.componentes.util;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.view.View;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -23,6 +24,7 @@ public class WebViewUtil {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
+                view.setVisibility(View.INVISIBLE);
                 view.loadUrl("about:blank");
                 // 断网或者网络连接超时
 //                if (errorCode == ERROR_HOST_LOOKUP || errorCode == ERROR_CONNECT || errorCode == ERROR_TIMEOUT) {
@@ -31,6 +33,12 @@ public class WebViewUtil {
                 if (listener != null) {
                     listener.onError();
                 }
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.postDelayed(() -> view.setVisibility(View.VISIBLE), 500);
             }
 
             @Override
@@ -74,7 +82,7 @@ public class WebViewUtil {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
-
+        webView.setVisibility(View.INVISIBLE);
         return webView;
     }
 

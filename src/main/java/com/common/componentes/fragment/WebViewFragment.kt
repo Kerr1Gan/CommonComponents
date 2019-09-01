@@ -121,6 +121,11 @@ class WebViewFragment : Fragment() {
                     view.loadUrl("about:blank")// 避免出现默认的错误界面
                 }
             }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                mWebView?.postDelayed({ mWebView?.visibility = View.VISIBLE }, 500)
+            }
         }
         mWebView?.setWebChromeClient(object : SimpleWebChromeClient() {
             override fun onReceivedTitle(view: WebView, title: String) {
@@ -142,6 +147,7 @@ class WebViewFragment : Fragment() {
 
         mJsInterface = JavaScriptInterface(context!!)
         mWebView?.addJavascriptInterface(mJsInterface, INTERFACE_NAME)
+        mWebView?.visibility = View.INVISIBLE
     }
 
     private fun toDoWithMIME(mime: String?, url: String?) {
