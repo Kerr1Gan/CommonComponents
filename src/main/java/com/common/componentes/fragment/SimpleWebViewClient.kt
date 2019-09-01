@@ -6,7 +6,7 @@ import android.webkit.WebViewClient
 /**
  * Created by KerriGan on 2017/8/5.
  */
-class SimpleWebViewClient : WebViewClient() {
+open class SimpleWebViewClient : WebViewClient() {
 
     init {
 

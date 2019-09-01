@@ -8,10 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
-import android.webkit.MimeTypeMap
-import android.webkit.WebView
+import android.webkit.*
 import com.common.componentes.R
+import com.common.componentes.util.WebViewUtil
 import com.common.utils.activity.ActivityUtil
 import com.common.utils.file.FileUtil
 import java.io.File
@@ -100,7 +99,17 @@ class WebViewFragment : Fragment() {
     @SuppressLint("JavascriptInterface")
     private fun initWebView() {
         mWebView = view?.findViewById<View>(R.id.web_view) as WebView?
-        mWebView?.setWebViewClient(SimpleWebViewClient())
+        mWebView?.webViewClient = object : SimpleWebViewClient() {
+            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+                super.onReceivedError(view, errorCode, description, failingUrl)
+                view?.loadUrl("about:blank")
+            }
+
+            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                super.onReceivedError(view, request, error)
+                view?.loadUrl("about:blank")
+            }
+        }
         mWebView?.setWebChromeClient(SimpleWebChromeClient())
 
         val settings = mWebView?.getSettings()
@@ -126,6 +135,7 @@ class WebViewFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mWebView?.removeJavascriptInterface(INTERFACE_NAME)
+        WebViewUtil.destroyWebView(mWebView, false)
     }
 
     class JavaScriptInterface(val context: Context) {
