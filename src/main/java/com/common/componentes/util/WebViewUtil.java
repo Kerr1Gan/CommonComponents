@@ -54,6 +54,9 @@ public class WebViewUtil {
             @Override
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
                 super.onReceivedHttpError(view, request, errorResponse);
+                if (request.getUrl().toString().contains("favicon.ico")) {
+                    return;
+                }
                 // 这个方法在6.0才出现
                 int statusCode = errorResponse.getStatusCode();
                 if (404 == statusCode || 500 == statusCode) {

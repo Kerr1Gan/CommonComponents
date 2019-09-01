@@ -114,6 +114,9 @@ class WebViewFragment : Fragment() {
             @TargetApi(android.os.Build.VERSION_CODES.M)
             override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
                 super.onReceivedHttpError(view, request, errorResponse)
+                if (request.url.toString().contains("favicon.ico")) {
+                    return
+                }
                 // 这个方法在6.0才出现
                 val statusCode = errorResponse.statusCode
                 println("onReceivedHttpError code = $statusCode")
