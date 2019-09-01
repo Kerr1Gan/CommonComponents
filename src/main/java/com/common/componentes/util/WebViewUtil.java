@@ -1,5 +1,7 @@
 package com.common.componentes.util;
 
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -10,7 +12,25 @@ import com.common.componentes.fragment.SimpleWebViewClient;
 public class WebViewUtil {
 
     public static WebView initWebView(WebView webView) {
-        webView.setWebViewClient(new SimpleWebViewClient());
+        return initWebView(webView, null);
+    }
+
+    public static WebView initWebView(WebView webView, ICallback listener) {
+        webView.setWebViewClient(new SimpleWebViewClient() {
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                view.loadUrl("about:blank");
+                if (listener != null) {
+                    listener.onError();
+                }
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+            }
+        });
         webView.setWebChromeClient(new SimpleWebChromeClient());
 
         WebSettings settings = webView.getSettings();
@@ -34,5 +54,9 @@ public class WebViewUtil {
         webView.freeMemory();
         webView.pauseTimers();
         webView.destroy();
+    }
+
+    public interface ICallback {
+        void onError();
     }
 }

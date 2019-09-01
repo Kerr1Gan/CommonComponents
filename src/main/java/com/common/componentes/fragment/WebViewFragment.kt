@@ -107,7 +107,7 @@ class WebViewFragment : Fragment() {
 
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
-                view?.loadUrl("about:blank")
+                //view?.loadUrl("about:blank")
             }
         }
         mWebView?.setWebChromeClient(SimpleWebChromeClient())
