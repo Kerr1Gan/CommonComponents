@@ -38,7 +38,11 @@ public class WebViewUtil {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                view.postDelayed(() -> view.setVisibility(View.VISIBLE), 500);
+                if (url.toLowerCase().contains("about:blank")) {
+                    view.setVisibility(View.VISIBLE);
+                } else {
+                    view.postDelayed(() -> view.setVisibility(View.VISIBLE), 500);
+                }
             }
 
             @Override
@@ -52,7 +56,6 @@ public class WebViewUtil {
                 super.onReceivedHttpError(view, request, errorResponse);
                 // 这个方法在6.0才出现
                 int statusCode = errorResponse.getStatusCode();
-                System.out.println("onReceivedHttpError code = " + statusCode);
                 if (404 == statusCode || 500 == statusCode) {
                     view.loadUrl("about:blank");// 避免出现默认的错误界面
                     if (listener != null) {

@@ -124,7 +124,11 @@ class WebViewFragment : Fragment() {
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                mWebView?.postDelayed({ mWebView?.visibility = View.VISIBLE }, 500)
+                if (url?.toLowerCase()?.contains("about:blank") == true) {
+                    mWebView?.visibility = View.VISIBLE
+                } else {
+                    mWebView?.postDelayed({ mWebView?.visibility = View.VISIBLE }, 500)
+                }
             }
         }
         mWebView?.setWebChromeClient(object : SimpleWebChromeClient() {
