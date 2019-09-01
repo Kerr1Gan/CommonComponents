@@ -127,7 +127,8 @@ class WebViewFragment : Fragment() {
                 super.onReceivedTitle(view, title)
                 // android 6.0 以下通过title获取
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    if (title.contains("404") || title.contains("500") || title.toLowerCase().contains("error")) {
+                    if (title.contains("404") || title.contains("500") || title.toLowerCase().contains("error")
+                            || title.toLowerCase().contains("Page not found".toLowerCase())) {
                         view.loadUrl("about:blank")// 避免出现默认的错误界面
                     }
                 }
