@@ -30,6 +30,8 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
 
     private var mSimpleHandler: SimpleHandler = SimpleHandler(this)
 
+    private var handler: Handler = Handler()
+
     protected lateinit var stateBundle: Bundle
 
     companion object {
@@ -113,11 +115,11 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
     }
 
     fun getHandler(): Handler {
-        if (mSimpleHandler == null) {
+        if (handler == null) {
             // crash in here?
-            mSimpleHandler = SimpleHandler(this)
+            handler = SimpleHandler(this)
         }
-        return mSimpleHandler
+        return handler
     }
 
     override fun handleMessage(msg: Message) {

@@ -17,8 +17,8 @@ open class WeakHandler<T : WeakHandler.IHandleMessage>(host: T) : Handler() {
 
     override fun handleMessage(msg: Message?) {
         super.handleMessage(msg)
-        if (mWeakRef?.get() == null) return
-        mWeakRef?.get()?.handleMessage(msg!!)
+        val t = mWeakRef?.get() ?: return
+        t.handleMessage(msg!!)
     }
 
     interface IHandleMessage {
