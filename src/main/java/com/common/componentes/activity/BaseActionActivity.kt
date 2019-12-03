@@ -38,6 +38,7 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        mSimpleHandler = SimpleHandler(this)
         super.onCreate(savedInstanceState)
         mLocalBroadcastManger = androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this)
         if (isRegisterActions()) {
@@ -46,7 +47,6 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
             registerActions(mIntentFilter)
             mLocalBroadcastManger?.registerReceiver(mBroadcastReceiver, mIntentFilter)
         }
-        mSimpleHandler = SimpleHandler(this)
 
         stateBundle = Bundle()
     }
