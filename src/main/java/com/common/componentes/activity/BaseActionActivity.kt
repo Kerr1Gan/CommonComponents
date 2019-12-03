@@ -28,7 +28,7 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
 
     private lateinit var mBroadcastReceiver: SimpleReceiver
 
-    private lateinit var mSimpleHandler: SimpleHandler
+    private var mSimpleHandler: SimpleHandler = SimpleHandler(this)
 
     protected lateinit var stateBundle: Bundle
 
@@ -113,6 +113,10 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
     }
 
     fun getHandler(): Handler {
+        if (mSimpleHandler == null) {
+            // crash in here?
+            mSimpleHandler = SimpleHandler(this)
+        }
         return mSimpleHandler
     }
 
