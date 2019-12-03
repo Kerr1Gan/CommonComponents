@@ -117,7 +117,7 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
     fun getHandler(): Handler {
         if (handler == null) {
             // crash in here?
-            handler = SimpleHandler(this)
+            handler = Handler()
         }
         return handler
     }
