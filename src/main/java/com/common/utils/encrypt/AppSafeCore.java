@@ -2,8 +2,10 @@ package com.common.utils.encrypt;
 
 import android.content.Context;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.security.SecureRandom;
+import java.io.ObjectInputStream;
+import java.security.Key;
 import java.util.UUID;
 
 public class AppSafeCore {
@@ -74,6 +76,39 @@ public class AppSafeCore {
             return RSAUtil.getPublicKeyBase64(root.getAbsolutePath() + File.separator + RSAUtil.PUBLIC_KEY_FILE);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public byte[] getPublicKeyBytes() {
+        try {
+            String publicKeyBs64 = RSAUtil.getPublicKeyBase64(root.getAbsolutePath() + File.separator + RSAUtil.PUBLIC_KEY_FILE);
+            if (publicKeyBs64 != null && publicKeyBs64.length() > 0) {
+                byte[] pubBytes = Base64.getDecoder().decode(publicKeyBs64);
+                ByteArrayInputStream is = new ByteArrayInputStream(pubBytes);
+                ObjectInputStream ois = null;
+                try {
+                    ois = new ObjectInputStream(is);
+                    Key key = (Key) ois.readObject();
+                    return key.getEncoded();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (ois != null) {
+                        ois.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getPublicKeyBytes64() {
+        byte[] pk = getPublicKeyBytes();
+        if (pk != null) {
+            return Base64.getEncoder().encodeToString(pk);
         }
         return null;
     }
