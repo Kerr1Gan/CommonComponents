@@ -37,6 +37,16 @@ public class AppSafeCore {
         }
     }
 
+    public boolean resetCer() {
+        try {
+            KeyPairGenUtil.generateKeyPair(root.getAbsolutePath());
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void initDeviceIdentify(String aaid, String androidId) {
         String id = aaid + "===" + androidId + "===" + UUID.randomUUID().toString();
     }
