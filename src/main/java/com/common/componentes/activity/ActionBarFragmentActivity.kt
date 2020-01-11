@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.MenuItem
 
-class ActionBarFragmentActivity : BaseFragmentActivity() {
+open class ActionBarFragmentActivity : BaseFragmentActivity() {
     companion object {
-        const private val EXTRA_TITLE = "extra_title"
+        private const val EXTRA_TITLE = "extra_title"
         @JvmOverloads
         @JvmStatic
         fun newInstance(context: Context, fragment: Class<*>, bundle: Bundle? = null,
@@ -31,8 +31,6 @@ class ActionBarFragmentActivity : BaseFragmentActivity() {
         if (!TextUtils.isEmpty(title)) {
             supportActionBar?.setTitle(title)
         }
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): kotlin.Boolean {
