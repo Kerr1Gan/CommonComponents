@@ -182,6 +182,25 @@ object ActivityUtil {
     }
 
     @JvmStatic
+    fun isNavigationBarExist(activity: Activity, listener: (Boolean, Int) -> (Unit)) {
+        val height = getNavigationBarHeight(activity)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            activity.getWindow().getDecorView().setOnApplyWindowInsetsListener { v, insets ->
+                var isShowing = false
+                var b = 0
+                if (insets != null) {
+                    b = insets.systemWindowInsetBottom
+                    isShowing = (b == height)
+                }
+                if (b <= height) {
+                    listener.invoke(isShowing, b)
+                }
+                insets!!
+            }
+        }
+    }
+
+    @JvmStatic
     fun getScreenHeight(activity: Activity): Int {
         return activity.windowManager.defaultDisplay.height + getNavigationBarHeight(activity)
     }
