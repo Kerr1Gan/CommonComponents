@@ -8,6 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Point
 import android.net.Uri
 import android.os.Build
@@ -348,5 +349,14 @@ object ActivityUtil {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject) // 主题
         intent.putExtra(Intent.EXTRA_TEXT, text) // 正文
         return Intent.createChooser(intent, chooseActivityTitle)
+    }
+
+    @JvmStatic
+    fun isDarkMode(context: Context): Boolean {
+        return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            else -> false
+        }
     }
 }
