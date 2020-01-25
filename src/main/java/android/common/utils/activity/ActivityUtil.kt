@@ -103,7 +103,9 @@ object ActivityUtil {
         val uri = if (appPkg.startsWith("http")) {
             Uri.parse(appPkg)
         } else {
-            // 仅仅只有market schema的能传递referrer到google play
+            // 仅仅只有market schema的能传递referrer到google play? 20200125 https也支持
+            // market://details?id=com.instantapp.flash&referrer=utm_source=aa
+            // https://play.google.com/store/apps/details?id=com.instantapp.flash&referrer=utm_source=bb
             Uri.parse("market://details?id=$appPkg")
         }
         val intent = Intent(Intent.ACTION_VIEW, uri)
