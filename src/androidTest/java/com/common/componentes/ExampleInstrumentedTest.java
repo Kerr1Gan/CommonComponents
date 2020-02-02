@@ -1,4 +1,4 @@
-package com.common.componentes;
+package android.common.componentes;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;

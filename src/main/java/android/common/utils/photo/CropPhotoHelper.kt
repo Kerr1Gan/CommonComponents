@@ -7,7 +7,7 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.fragment.app.FragmentActivity
 import androidx.core.content.FileProvider
-import com.common.componentes.BuildConfig
+import android.common.componentes.BuildConfig
 import java.io.File
 
 /**

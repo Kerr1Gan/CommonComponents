@@ -1,4 +1,4 @@
-package com.common.componentes;
+package android.common.componentes;
 
 import org.junit.Test;
 

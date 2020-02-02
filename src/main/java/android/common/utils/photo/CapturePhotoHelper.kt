@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.core.content.FileProvider
 import android.text.TextUtils
 import android.widget.Toast
-import com.common.componentes.BuildConfig
+import android.common.componentes.BuildConfig
 import android.common.utils.activity.ActivityUtil
 import android.common.utils.file.FileUtil
 import java.io.File

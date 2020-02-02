@@ -1,12 +1,11 @@
 package android.common.componentes.activity
 
 import android.app.Activity
+import android.common.componentes.R
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.TextUtils
-import com.common.componentes.R
 
 
 /**
