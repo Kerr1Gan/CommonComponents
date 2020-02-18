@@ -1,4 +1,4 @@
-package com.common.componentes.fragment
+package android.common.componentes.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.MimeTypeMap
 import android.webkit.WebView
-import com.common.componentes.R
-import com.common.utils.activity.ActivityUtil
-import com.common.utils.file.FileUtil
+import android.common.componentes.R
+import android.common.utils.activity.ActivityUtil
+import android.common.utils.file.FileUtil
 import java.io.File
 import java.lang.Exception
 

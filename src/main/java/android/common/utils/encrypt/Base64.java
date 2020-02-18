@@ -1,4 +1,4 @@
-package com.common.utils.encrypt;
+package android.common.utils.encrypt;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

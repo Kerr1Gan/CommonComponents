@@ -1,10 +1,10 @@
-package com.common.componentes.util;
+package android.common.componentes.util;
 
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.common.componentes.fragment.SimpleWebChromeClient;
-import com.common.componentes.fragment.SimpleWebViewClient;
+import android.common.componentes.fragment.SimpleWebChromeClient;
+import android.common.componentes.fragment.SimpleWebViewClient;
 
 
 public class WebViewUtil {

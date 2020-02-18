@@ -1,4 +1,4 @@
-package com.common.componentes.fragment
+package android.common.componentes.fragment
 
 import android.webkit.WebChromeClient
 
