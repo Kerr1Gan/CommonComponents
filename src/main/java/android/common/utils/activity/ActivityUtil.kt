@@ -340,4 +340,15 @@ object ActivityUtil {
         }
         return false
     }
+
+    @JvmStatic
+    fun sendMailIntent(mailTo: String, subject: String, text: String, chooseActivityTitle: String): Intent {
+        // 必须明确使用mailto前缀来修饰邮件地址,如果使用   intent.putExtra(Intent.EXTRA_EMAIL, email)，结果将匹配不到任何应用
+        val uri = Uri.parse("mailto:$mailTo")
+        val intent = Intent(Intent.ACTION_SENDTO, uri)
+        //intent.putExtra(Intent.EXTRA_CC, email) // 抄送人
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject) // 主题
+        intent.putExtra(Intent.EXTRA_TEXT, text) // 正文
+        return Intent.createChooser(intent, chooseActivityTitle)
+    }
 }

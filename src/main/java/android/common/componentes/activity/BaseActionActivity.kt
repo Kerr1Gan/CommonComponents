@@ -112,7 +112,7 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun getHandler(): Handler? {
+    fun getHandler(): Handler {
         return mSimpleHandler
     }
 
