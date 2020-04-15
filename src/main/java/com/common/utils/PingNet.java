@@ -2,6 +2,8 @@ package com.common.utils;
 
 import android.util.Log;
 
+import com.common.componentes.BuildConfig;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,7 +23,9 @@ public class PingNet {
         try {
             process = Runtime.getRuntime().exec(command);
             if (process == null) {
-                Log.e(TAG, "ping fail:process is null.");
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "ping fail:process is null.");
+                }
                 append(resultBuffer, "ping fail:process is null.");
                 return null;
             }
@@ -29,7 +33,9 @@ public class PingNet {
             int count = 0;
             BigDecimal sum = new BigDecimal(0);
             while ((line = successReader.readLine()) != null) {
-                Log.e(TAG, line);
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, line);
+                }
                 append(resultBuffer, line);
                 BigDecimal time = getTime(line);
                 if (time != null) {
@@ -44,19 +50,26 @@ public class PingNet {
                 pingTime = null;
             int status = process.waitFor();
             if (status == 0) {
-                Log.e(TAG, "exec cmd success:" + command);
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "exec cmd success:" + command);
+                }
                 append(resultBuffer, "exec cmd success:" + command);
             } else {
                 append(resultBuffer, "exec cmd fail.");
             }
-            Log.e(TAG, "exec finished.");
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "exec finished.");
+            }
             append(resultBuffer, "exec finished.");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         } finally {
-            Log.e(TAG, "ping exit.");
+            if (BuildConfig.DEBUG) {
+                Log.e(TAG, "ping exit.");
+            }
             if (process != null) {
                 process.destroy();
             }
@@ -67,7 +80,9 @@ public class PingNet {
                 }
             }
         }
-        Log.e(TAG, resultBuffer.toString());
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, resultBuffer.toString());
+        }
         return pingTime;
     }
 
