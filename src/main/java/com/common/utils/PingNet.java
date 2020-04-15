@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class PingNet {
     private static final String TAG = "PingNet";
 
-    public static String ping(String ip) {
+    public static String ping(String ip) throws InterruptedException {
         String line;
         Process process = null;
         BufferedReader successReader = null;
@@ -63,10 +63,7 @@ public class PingNet {
             append(resultBuffer, "exec finished.");
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        } finally {
+        }  finally {
             if (BuildConfig.DEBUG) {
                 Log.e(TAG, "ping exit.");
             }
