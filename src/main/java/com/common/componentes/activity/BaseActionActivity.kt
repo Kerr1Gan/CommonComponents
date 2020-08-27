@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Point
 import android.os.*
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
@@ -53,7 +52,7 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
         stateBundle = Bundle()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState?.putBundle(KEY_VIEW_BUNDLE, stateBundle)
     }
