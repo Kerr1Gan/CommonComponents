@@ -359,4 +359,13 @@ object ActivityUtil {
             else -> false
         }
     }
+
+    @JvmStatic
+    fun shareTextToOtherApp(title: String, msg: String): Intent? {
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(Intent.EXTRA_TEXT, msg)
+        sendIntent.type = "text/plain"
+        return Intent.createChooser(sendIntent, title)
+    }
 }
