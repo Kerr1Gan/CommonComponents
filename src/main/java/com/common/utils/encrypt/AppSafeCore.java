@@ -63,6 +63,13 @@ public class AppSafeCore {
         return true;
     }
 
+    public void clear() {
+        File publicKey = new File(root.getAbsolutePath() + File.separator + RSAUtil.PUBLIC_KEY_FILE);
+        File privateKey = new File(root.getAbsolutePath() + File.separator + RSAUtil.PRIVATE_KEY_FILE);
+        publicKey.delete();
+        privateKey.delete();
+    }
+
     public String encryptData(String data) {
         try {
             return RSAUtil.encrypt(root.getAbsolutePath() + File.separator + RSAUtil.PUBLIC_KEY_FILE, data);
