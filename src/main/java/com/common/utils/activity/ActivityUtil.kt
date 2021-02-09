@@ -361,7 +361,7 @@ object ActivityUtil {
     }
 
     @JvmStatic
-    fun shareTextToOtherApp(title: String, msg: String): Intent {
+    fun shareTextToOtherApp(title: String, msg: String): Intent? {
         val sendIntent = Intent()
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(Intent.EXTRA_TEXT, msg)
