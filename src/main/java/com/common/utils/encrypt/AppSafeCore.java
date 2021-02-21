@@ -129,13 +129,4 @@ public class AppSafeCore {
         }
         return null;
     }
-
-    public void clear() {
-        File publicKey = new File(root.getAbsolutePath() + File.separator + RSAUtil.PUBLIC_KEY_FILE);
-        File privateKey = new File(root.getAbsolutePath() + File.separator + RSAUtil.PRIVATE_KEY_FILE);
-        File root = new File(this.context.getFilesDir().getAbsolutePath() + File.separator + "cer");
-        publicKey.delete();
-        privateKey.delete();
-        root.delete();
-    }
 }
