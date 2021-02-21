@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 public class PingNet {
     private static final String TAG = "PingNet";
@@ -63,7 +65,7 @@ public class PingNet {
             append(resultBuffer, "exec finished.");
         } catch (IOException e) {
             e.printStackTrace();
-        }  finally {
+        } finally {
             if (BuildConfig.DEBUG) {
                 Log.e(TAG, "ping exit.");
             }
@@ -81,6 +83,35 @@ public class PingNet {
             Log.e(TAG, resultBuffer.toString());
         }
         return pingTime;
+    }
+
+    public static String tcping(String url, int port, int timeout) {
+        long time = -1L;
+        for (int i = 0; i < 2; i++) {
+            long one = socketConnectTime(url, port, timeout);
+            if (one < 0) {
+                return null;
+            }
+            if (time == -1L || one < time) {
+                time = one;
+            }
+        }
+        return time + " ms";
+    }
+
+    static long socketConnectTime(String url, int port, int timeout) {
+        try {
+            long start = System.currentTimeMillis();
+            Socket socket = new Socket();
+            socket.setSoTimeout(timeout);
+            socket.connect(new InetSocketAddress(url, port), timeout);
+            long time = System.currentTimeMillis() - start;
+            socket.close();
+            return time;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     private static void append(StringBuffer stringBuffer, String text) {
