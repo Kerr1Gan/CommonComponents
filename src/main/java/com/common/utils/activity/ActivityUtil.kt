@@ -341,6 +341,14 @@ object ActivityUtil {
     }
 
     @JvmStatic
+    fun isAppInstalled(context: Context, pkgName: String): Boolean {
+        val packageManager = context.packageManager
+        val info = packageManager.getPackageInfo(pkgName, PackageManager.GET_CONFIGURATIONS)
+                ?: return false
+        return info.packageName.equals(pkgName)
+    }
+
+    @JvmStatic
     fun sendMailIntent(mailTo: String, subject: String, text: String, chooseActivityTitle: String): Intent {
         // 必须明确使用mailto前缀来修饰邮件地址,如果使用   intent.putExtra(Intent.EXTRA_EMAIL, email)，结果将匹配不到任何应用
         val uri = Uri.parse("mailto:$mailTo")
