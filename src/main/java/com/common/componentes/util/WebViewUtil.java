@@ -2,18 +2,106 @@ package com.common.componentes.util;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
-import com.common.componentes.fragment.SimpleWebChromeClient;
 import com.common.componentes.fragment.SimpleWebViewClient;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.VisibleForTesting;
 
 
 public class WebViewUtil {
+
+    // Verifies that a url opened by `Window.open` has a secure url.
+    private static class FlutterWebChromeClient extends WebChromeClient {
+
+        WebView webView;
+
+        ICallback listener;
+
+        public FlutterWebChromeClient(WebView webView, ICallback listener) {
+            this.webView = webView;
+            this.listener = listener;
+        }
+
+        @Override
+        public boolean onCreateWindow(
+                final WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+            final WebViewClient webViewClient =
+                    new WebViewClient() {
+                        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                        @Override
+                        public boolean shouldOverrideUrlLoading(
+                                @NonNull WebView view, @NonNull WebResourceRequest request) {
+                            webView.loadUrl(request.getUrl().toString());
+                            return true;
+                        }
+
+                        /*
+                         * This method is deprecated in API 24. Still overridden to support
+                         * earlier Android versions.
+                         */
+                        @SuppressWarnings("deprecation")
+                        @Override
+                        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                            webView.loadUrl(url);
+                            return true;
+                        }
+                    };
+
+            final WebView newWebView = new WebView(webView.getContext());
+            newWebView.setWebViewClient(webViewClient);
+
+            final WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+            transport.setWebView(newWebView);
+            resultMsg.sendToTarget();
+
+            return true;
+        }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+            // android 6.0 以下通过title获取
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                if (title.contains("404") || title.contains("500") || title.toLowerCase().contains("error")
+                        || title.toLowerCase().contains("Page not found".toLowerCase())) {
+                    view.loadUrl("about:blank");// 避免出现默认的错误界面
+                    if (listener != null) {
+                        listener.onError();
+                    }
+                }
+            }
+        }
+    }
+
+    @VisibleForTesting
+    public static Map<String, String> extractHeaders(@Nullable Bundle headersBundle) {
+        if (headersBundle == null) {
+            return Collections.emptyMap();
+        }
+        final Map<String, String> headersMap = new HashMap<>();
+        for (String key : headersBundle.keySet()) {
+            final String value = headersBundle.getString(key);
+            headersMap.put(key, value);
+        }
+        return headersMap;
+    }
 
     public static WebView initWebView(WebView webView) {
         return initWebView(webView, null);
@@ -66,28 +154,37 @@ public class WebViewUtil {
                     }
                 }
             }
-        });
-        webView.setWebChromeClient(new SimpleWebChromeClient() {
+
+            /*
+             * This method is deprecated in API 24. Still overridden to support
+             * earlier Android versions.
+             */
+            @SuppressWarnings("deprecation")
             @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-                // android 6.0 以下通过title获取
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    if (title.contains("404") || title.contains("500") || title.toLowerCase().contains("error")
-                            || title.toLowerCase().contains("Page not found".toLowerCase())) {
-                        view.loadUrl("about:blank");// 避免出现默认的错误界面
-                        if (listener != null) {
-                            listener.onError();
-                        }
-                    }
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    view.loadUrl(url);
+                    return false;
                 }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+
+            @RequiresApi(Build.VERSION_CODES.N)
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    view.loadUrl(request.getUrl().toString());
+                }
+                return false;
             }
         });
+        webView.setWebChromeClient(new FlutterWebChromeClient(webView, listener));
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
+        settings.setSupportMultipleWindows(true);
         webView.setVisibility(View.INVISIBLE);
         return webView;
     }
