@@ -1,6 +1,9 @@
 package com.common.componentes.util;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -162,9 +165,30 @@ public class WebViewUtil {
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url == null || view == null) {
+                    return false;
+                }
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     view.loadUrl(url);
                     return false;
+                }
+                Context context = view.getContext();
+                Uri uri = Uri.parse(url);
+                String schema = uri.getScheme();
+                if (schema != null) {
+                    if (schema.contains("http") || schema.contains("https")) {  //处理http和https开头的url
+                        view.loadUrl(url);
+                        return true;
+                    } else {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            context.startActivity(intent);
+                            return true;
+                        } catch (Exception e) {
+                            //防止crash (如果手机上没有安装处理某个scheme开头的url的APP, 会导致crash)
+                            return false;
+                        }
+                    }
                 }
                 return super.shouldOverrideUrlLoading(view, url);
             }
@@ -172,8 +196,32 @@ public class WebViewUtil {
             @RequiresApi(Build.VERSION_CODES.N)
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    view.loadUrl(request.getUrl().toString());
+                String url = request.getUrl().toString();
+                if (url == null || view == null) {
+                    return false;
+                }
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    view.loadUrl(url);
+                    return false;
+                }
+                Context context = view.getContext();
+                Uri uri = Uri.parse(url);
+                String schema = uri.getScheme();
+                if (schema != null) {
+                    if (schema.contains("http") || schema.contains("https")) {  //处理http和https开头的url
+                        view.loadUrl(url);
+                        return true;
+                    } else {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                            return true;
+                        } catch (Exception e) {
+                            //防止crash (如果手机上没有安装处理某个scheme开头的url的APP, 会导致crash)
+                            return false;
+                        }
+                    }
                 }
                 return false;
             }
