@@ -248,7 +248,7 @@ public class WebViewUtil {
         webView.clearHistory();
         webView.clearCache(clearCache);
         webView.freeMemory();
-        webView.pauseTimers();
+        //webView.pauseTimers();
         webView.destroy();
     }
 
