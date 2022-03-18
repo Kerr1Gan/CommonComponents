@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -17,6 +18,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.common.componentes.fragment.SimpleWebViewClient;
+import com.common.utils.activity.ActivityUtil;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -211,6 +213,23 @@ public class WebViewUtil {
                     if (schema.contains("http") || schema.contains("https")) {  //处理http和https开头的url
                         view.loadUrl(url);
                         return true;
+                    }
+                    if (schema.startsWith("market")) {
+                        try {
+                            ActivityUtil.jumpToMarketByUrl(context, url, "com.android.vending");
+                            return true;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else if (schema.startsWith("browser")) {
+                        try {
+                            String browserUrl = url.replaceFirst("browser://", "");
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(browserUrl));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
+                            return true;
+                        } catch (Exception e) {
+                        }
                     } else {
                         try {
                             Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
