@@ -57,7 +57,7 @@ abstract class BaseActionActivity : AppCompatActivity(), WeakHandler.IHandleMess
         outState?.putBundle(KEY_VIEW_BUNDLE, stateBundle)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         stateBundle = savedInstanceState?.getBundle(KEY_VIEW_BUNDLE) ?: stateBundle
     }
