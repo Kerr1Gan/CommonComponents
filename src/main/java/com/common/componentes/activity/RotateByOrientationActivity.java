@@ -56,25 +56,25 @@ public class RotateByOrientationActivity extends BaseFragmentActivity {
         mOrientationListener.disable();
     }
 
-    @NotNull
-    public static Intent newInstance(@NotNull Context context, @NotNull Class fragment, @Nullable Bundle bundle, @NotNull Class clazz) {
-        Intrinsics.checkParameterIsNotNull(context, "context");
-        Intrinsics.checkParameterIsNotNull(fragment, "fragment");
-        Intrinsics.checkParameterIsNotNull(clazz, "clazz");
-        return newInstance(context, fragment, bundle, clazz);
-    }
-
-    @NotNull
-    public static Intent newInstance(@NotNull Context context, @NotNull Class fragment, @Nullable Bundle bundle) {
-        return RotateNoCreateActivity.newInstance(context, fragment, bundle, getActivityClazz());
-    }
-
-    @NotNull
-    public static Intent newInstance(@NotNull Context context, @NotNull Class fragment) {
-        return RotateNoCreateActivity.newInstance(context, fragment, null);
-    }
-
-    protected static Class<? extends Activity> getActivityClazz() {
-        return RotateByOrientationActivity.class;
-    }
+//    @NotNull
+//    public static Intent newInstance(@NotNull Context context, @NotNull Class fragment, @Nullable Bundle bundle, @NotNull Class clazz) {
+//        Intrinsics.checkParameterIsNotNull(context, "context");
+//        Intrinsics.checkParameterIsNotNull(fragment, "fragment");
+//        Intrinsics.checkParameterIsNotNull(clazz, "clazz");
+//        return newInstance(context, fragment, bundle, clazz);
+//    }
+//
+//    @NotNull
+//    public static Intent newInstance(@NotNull Context context, @NotNull Class fragment, @Nullable Bundle bundle) {
+//        return RotateNoCreateActivity.newInstance(context, fragment, bundle, getActivityClazz());
+//    }
+//
+//    @NotNull
+//    public static Intent newInstance(@NotNull Context context, @NotNull Class fragment) {
+//        return RotateNoCreateActivity.newInstance(context, fragment, null);
+//    }
+//
+//    protected static Class<? extends Activity> getActivityClazz() {
+//        return RotateByOrientationActivity.class;
+//    }
 }
