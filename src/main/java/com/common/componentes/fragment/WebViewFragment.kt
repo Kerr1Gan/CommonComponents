@@ -101,60 +101,62 @@ class WebViewFragment : Fragment() {
     @SuppressLint("JavascriptInterface")
     private fun initWebView() {
         mWebView = view?.findViewById<View>(R.id.web_view) as WebView?
-        mWebView?.webViewClient = object : SimpleWebViewClient() {
-            override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
-                super.onReceivedError(view, errorCode, description, failingUrl)
-                view.loadUrl("about:blank")
-            }
-
-            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-                super.onReceivedError(view, request, error)
-            }
-
-            @TargetApi(android.os.Build.VERSION_CODES.M)
-            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
-                super.onReceivedHttpError(view, request, errorResponse)
-                if (request.url.toString().contains("favicon.ico")) {
-                    return
-                }
-                // 这个方法在6.0才出现
-                val statusCode = errorResponse.statusCode
-                println("onReceivedHttpError code = $statusCode")
-                if (404 == statusCode || 500 == statusCode) {
-                    view.loadUrl("about:blank")// 避免出现默认的错误界面
-                }
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                if (url?.toLowerCase()?.contains("about:blank") == true) {
-                    mWebView?.visibility = View.VISIBLE
-                } else {
-                    mWebView?.postDelayed({ mWebView?.visibility = View.VISIBLE }, 500)
-                }
-            }
-        }
-        mWebView?.setWebChromeClient(object : SimpleWebChromeClient() {
-            override fun onReceivedTitle(view: WebView, title: String) {
-                super.onReceivedTitle(view, title)
-                // android 6.0 以下通过title获取
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    if (title.contains("404") || title.contains("500") || title.toLowerCase().contains("error")
-                            || title.toLowerCase().contains("Page not found".toLowerCase())) {
-                        view.loadUrl("about:blank")// 避免出现默认的错误界面
-                    }
-                }
-            }
-        })
-
-        val settings = mWebView?.getSettings()
-        settings?.javaScriptEnabled = true
-        settings?.domStorageEnabled = true
-        settings?.databaseEnabled = true
-
-        mJsInterface = JavaScriptInterface(context!!)
-        mWebView?.addJavascriptInterface(mJsInterface, INTERFACE_NAME)
-        mWebView?.visibility = View.INVISIBLE
+        WebViewUtil.initWebView(mWebView)
+        mWebView?.visibility = View.VISIBLE
+//        mWebView?.webViewClient = object : SimpleWebViewClient() {
+//            override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
+//                super.onReceivedError(view, errorCode, description, failingUrl)
+//                view.loadUrl("about:blank")
+//            }
+//
+//            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+//                super.onReceivedError(view, request, error)
+//            }
+//
+//            @TargetApi(android.os.Build.VERSION_CODES.M)
+//            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
+//                super.onReceivedHttpError(view, request, errorResponse)
+//                if (request.url.toString().contains("favicon.ico")) {
+//                    return
+//                }
+//                // 这个方法在6.0才出现
+//                val statusCode = errorResponse.statusCode
+//                println("onReceivedHttpError code = $statusCode")
+//                if (404 == statusCode || 500 == statusCode) {
+//                    view.loadUrl("about:blank")// 避免出现默认的错误界面
+//                }
+//            }
+//
+//            override fun onPageFinished(view: WebView?, url: String?) {
+//                super.onPageFinished(view, url)
+//                if (url?.toLowerCase()?.contains("about:blank") == true) {
+//                    mWebView?.visibility = View.VISIBLE
+//                } else {
+//                    mWebView?.postDelayed({ mWebView?.visibility = View.VISIBLE }, 500)
+//                }
+//            }
+//        }
+//        mWebView?.setWebChromeClient(object : SimpleWebChromeClient() {
+//            override fun onReceivedTitle(view: WebView, title: String) {
+//                super.onReceivedTitle(view, title)
+//                // android 6.0 以下通过title获取
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//                    if (title.contains("404") || title.contains("500") || title.toLowerCase().contains("error")
+//                            || title.toLowerCase().contains("Page not found".toLowerCase())) {
+//                        view.loadUrl("about:blank")// 避免出现默认的错误界面
+//                    }
+//                }
+//            }
+//        })
+//
+//        val settings = mWebView?.getSettings()
+//        settings?.javaScriptEnabled = true
+//        settings?.domStorageEnabled = true
+//        settings?.databaseEnabled = true
+//
+//        mJsInterface = JavaScriptInterface(context!!)
+//        mWebView?.addJavascriptInterface(mJsInterface, INTERFACE_NAME)
+//        mWebView?.visibility = View.INVISIBLE
     }
 
     private fun toDoWithMIME(mime: String?, url: String?) {
