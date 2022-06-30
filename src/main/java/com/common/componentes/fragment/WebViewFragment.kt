@@ -2,7 +2,9 @@ package com.common.componentes.fragment
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -58,7 +60,11 @@ class WebViewFragment : Fragment() {
 
     private var mWebView: WebView? = null
     private var mJsInterface: JavaScriptInterface? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.cc_fragment_web_view, container, false)
     }
 
@@ -92,7 +98,7 @@ class WebViewFragment : Fragment() {
             } else if (type == TYPE_MIME) {
                 val extension = MimeTypeMap.getFileExtensionFromUrl(url)
                 val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-                        ?: "text/html"
+                    ?: "text/html"
                 toDoWithMIME(mime, url)
             }
         }
@@ -101,7 +107,21 @@ class WebViewFragment : Fragment() {
     @SuppressLint("JavascriptInterface")
     private fun initWebView() {
         mWebView = view?.findViewById<View>(R.id.web_view) as WebView?
-        WebViewUtil.initWebView(mWebView)
+        WebViewUtil.initWebView(mWebView, object : WebViewUtil.ICallback {
+            override fun onError() {
+            }
+
+            override fun jsCall(method: String?, param: String?): String {
+                if (method == "finishActivity") {
+                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra("data", param ?: "")
+                        putExtra("method", method)
+                    })
+                    activity?.finish()
+                }
+                return ""
+            }
+        })
         mWebView?.visibility = View.VISIBLE
 //        mWebView?.webViewClient = object : SimpleWebViewClient() {
 //            override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {

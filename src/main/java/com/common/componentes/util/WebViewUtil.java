@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -17,6 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.common.componentes.BuildConfig;
 import com.common.componentes.fragment.SimpleWebViewClient;
 import com.common.utils.activity.ActivityUtil;
 
@@ -253,6 +255,8 @@ public class WebViewUtil {
         settings.setDatabaseEnabled(true);
         settings.setSupportMultipleWindows(true);
         webView.setVisibility(View.INVISIBLE);
+        webView.addJavascriptInterface(new JsObject(listener), "android");
+        WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
         return webView;
     }
 
@@ -273,5 +277,27 @@ public class WebViewUtil {
 
     public interface ICallback {
         void onError();
+
+        String jsCall(String method, String param);
+    }
+
+    private static class JsObject {
+
+        ICallback callback;
+
+        public JsObject(ICallback callback) {
+            this.callback = callback;
+        }
+
+        @JavascriptInterface
+        public String jsCall(String method, String param) {
+            if (BuildConfig.DEBUG) {
+                Log.i("JsObject", "jsCall: " + method + " " + param);
+            }
+            if (this.callback != null) {
+                return this.callback.jsCall(method, param);
+            }
+            return "";
+        }
     }
 }
