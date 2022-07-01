@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import androidx.core.widget.ContentLoadingProgressBar
 import com.common.componentes.R
 import com.common.componentes.util.WebViewUtil
 import com.common.utils.activity.ActivityUtil
@@ -60,6 +61,7 @@ class WebViewFragment : Fragment() {
 
     private var mWebView: WebView? = null
     private var mJsInterface: JavaScriptInterface? = null
+    private var progressBar: ContentLoadingProgressBar? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -113,16 +115,33 @@ class WebViewFragment : Fragment() {
 
             override fun jsCall(method: String?, param: String?): String {
                 if (method == "finishActivity") {
+                    activity?.finish()
+                } else if (method == "finishActivityWithResult") {
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra("data", param ?: "")
                         putExtra("method", method)
                     })
                     activity?.finish()
+                } else if (method == "paypalCallback") {
+                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                        putExtra("data", param ?: "")
+                        putExtra("method", method)
+                    })
                 }
                 return ""
             }
+
+            override fun onProgress(view: WebView?, newProgress: Int) {
+                if (newProgress == 100) {
+                    progressBar?.visibility = View.GONE
+                } else {
+                    progressBar?.visibility = View.VISIBLE
+                    progressBar?.progress = newProgress
+                }
+            }
         })
         mWebView?.visibility = View.VISIBLE
+        progressBar = view?.findViewById(R.id.pb_loading)
 //        mWebView?.webViewClient = object : SimpleWebViewClient() {
 //            override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
 //                super.onReceivedError(view, errorCode, description, failingUrl)

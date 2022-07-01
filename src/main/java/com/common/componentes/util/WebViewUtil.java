@@ -95,6 +95,13 @@ public class WebViewUtil {
                 }
             }
         }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (listener != null) {
+                listener.onProgress(view, newProgress);
+            }
+        }
     }
 
     @VisibleForTesting
@@ -279,6 +286,8 @@ public class WebViewUtil {
         void onError();
 
         String jsCall(String method, String param);
+
+        void onProgress(WebView view, int newProgress);
     }
 
     private static class JsObject {
