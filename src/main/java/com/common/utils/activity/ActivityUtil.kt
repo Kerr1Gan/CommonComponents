@@ -12,14 +12,22 @@ import android.content.res.Configuration
 import android.graphics.Point
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import androidx.core.app.ActivityCompat
 import android.util.Log
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.ViewConfiguration
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import com.common.componentes.BuildConfig
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.review.testing.FakeReviewManager
 import java.io.File
 
 
@@ -37,8 +45,14 @@ object ActivityUtil {
             localIntent.setData(Uri.fromParts("package", context.getPackageName(), null))
         } else if (Build.VERSION.SDK_INT <= 8) {
             localIntent.setAction(Intent.ACTION_VIEW)
-            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails")
-            localIntent.putExtra("com.android.settings.ApplicationPkgName", context.getPackageName())
+            localIntent.setClassName(
+                "com.android.settings",
+                "com.android.settings.InstalledAppDetails"
+            )
+            localIntent.putExtra(
+                "com.android.settings.ApplicationPkgName",
+                context.getPackageName()
+            )
         }
         return localIntent
     }
@@ -52,7 +66,10 @@ object ActivityUtil {
             localIntent.setData(Uri.fromParts("package", packageName, null))
         } else if (Build.VERSION.SDK_INT <= 8) {
             localIntent.setAction(Intent.ACTION_VIEW)
-            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails")
+            localIntent.setClassName(
+                "com.android.settings",
+                "com.android.settings.InstalledAppDetails"
+            )
             localIntent.putExtra("com.android.settings.ApplicationPkgName", packageName)
         }
         return localIntent
@@ -63,7 +80,10 @@ object ActivityUtil {
         val intent = Intent()
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         //打开网络共享与热点设置页面
-        intent.component = ComponentName("com.android.settings", "com.android.settings.Settings\$TetherSettingsActivity")
+        intent.component = ComponentName(
+            "com.android.settings",
+            "com.android.settings.Settings\$TetherSettingsActivity"
+        )
         return intent
     }
 
@@ -74,13 +94,14 @@ object ActivityUtil {
     @JvmStatic
     fun isAppOnForeground(context: Context): Boolean {
         val activityManager = context.getApplicationContext()
-                .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val packageName = context.getApplicationContext().getPackageName()
+
         /**
          * 获取Android设备中所有正在运行的App
          */
         val appProcesses = activityManager
-                .runningAppProcesses ?: return false
+            .runningAppProcesses ?: return false
         for (appProcess in appProcesses) {
             // The name of the process that this object is associated with.
             if (appProcess.processName == packageName && appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
@@ -208,12 +229,27 @@ object ActivityUtil {
 
     @JvmStatic
     fun download(context: Context, url: String): String? {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             if (context is Activity) {
-                ActivityCompat.requestPermissions(context, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 100)
+                ActivityCompat.requestPermissions(
+                    context,
+                    arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    ),
+                    100
+                )
             }
-            Toast.makeText(context, "unable to access write external storage", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "unable to access write external storage", Toast.LENGTH_SHORT)
+                .show()
             return null
         }
         var path: String? = null
@@ -223,7 +259,8 @@ object ActivityUtil {
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             //指定下载路径和下载文件名
             val name = url.substring(url.lastIndexOf("/") + 1)
-            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + File.separator + name
+            path =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + File.separator + name
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             request.setVisibleInDownloadsUi(true)
@@ -238,7 +275,8 @@ object ActivityUtil {
             request.setDescription("下载完后请点击更新")
             request.setMimeType("application/vnd.android.package-archive")
             //获取下载管理器
-            val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val downloadManager =
+                context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             //将下载任务加入下载队列，否则不会进行下载
             downloadManager.enqueue(request)
         } catch (ex: Exception) {
@@ -262,7 +300,11 @@ object ActivityUtil {
     }
 
     @JvmStatic
-    fun startInstallPermissionSettingActivity(context: Context, packageName: String, requestCode: Int = 0x33) {
+    fun startInstallPermissionSettingActivity(
+        context: Context,
+        packageName: String,
+        requestCode: Int = 0x33
+    ) {
         val intent = Intent()
         //获取当前apk包URI，并设置到intent中（这一步设置，可让“未知应用权限设置界面”只显示当前应用的设置项）
         val packageURI = Uri.parse("package:$packageName")
@@ -344,12 +386,17 @@ object ActivityUtil {
     fun isAppInstalled(context: Context, pkgName: String): Boolean {
         val packageManager = context.packageManager
         val info = packageManager.getPackageInfo(pkgName, PackageManager.GET_CONFIGURATIONS)
-                ?: return false
+            ?: return false
         return info.packageName.equals(pkgName)
     }
 
     @JvmStatic
-    fun sendMailIntent(mailTo: String, subject: String, text: String, chooseActivityTitle: String): Intent {
+    fun sendMailIntent(
+        mailTo: String,
+        subject: String,
+        text: String,
+        chooseActivityTitle: String
+    ): Intent {
         // 必须明确使用mailto前缀来修饰邮件地址,如果使用   intent.putExtra(Intent.EXTRA_EMAIL, email)，结果将匹配不到任何应用
         val uri = Uri.parse("mailto:$mailTo")
         val intent = Intent(Intent.ACTION_SENDTO, uri)
@@ -375,5 +422,41 @@ object ActivityUtil {
         sendIntent.putExtra(Intent.EXTRA_TEXT, msg)
         sendIntent.type = "text/plain"
         return Intent.createChooser(sendIntent, title)
+    }
+
+    @JvmStatic
+    fun requestReview(context: Activity, listener: OnSuccessListener<Void>,onCompleteListener: OnCompleteListener<ReviewInfo>):Boolean {
+        try {
+            var manager = ReviewManagerFactory.create(context)
+            if (BuildConfig.DEBUG) {
+                manager = FakeReviewManager(context)
+            }
+            val request = manager.requestReviewFlow()
+            val finalManager = manager
+            request.addOnCompleteListener { task: Task<ReviewInfo?> ->
+                try {
+                    onCompleteListener.onComplete(task)
+                    if (task.isSuccessful) {
+                        // We can get the ReviewInfo object
+                        val reviewInfo = task.result
+                        finalManager.launchReviewFlow(context, reviewInfo!!)
+                            .addOnSuccessListener(listener)
+                    } else {
+                        // There was some problem, log or handle the error code.
+                        //@ReviewErrorCode int reviewErrorCode = ((TaskException) task.getException()).getErrorCode();
+                        /*val bundle = Bundle()
+                        if (task.exception != null) {
+                            bundle.putString("exception", task.exception.toString())
+                        }*/
+                    }
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
+            return true
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return false
     }
 }
