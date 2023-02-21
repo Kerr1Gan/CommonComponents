@@ -117,11 +117,11 @@ public class WebViewUtil {
         return headersMap;
     }
 
-    public static WebView initWebView(WebView webView) {
-        return initWebView(webView, null);
+    public static WebView initWebView(WebView webView,boolean override2Browser) {
+        return initWebView(webView, null,override2Browser);
     }
 
-    public static WebView initWebView(WebView webView, ICallback listener) {
+    public static WebView initWebView(WebView webView, ICallback listener,boolean override2Browser) {
         webView.setWebViewClient(new SimpleWebViewClient() {
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -134,6 +134,9 @@ public class WebViewUtil {
 //                }
                 if (listener != null) {
                     listener.onError();
+                }
+                if(BuildConfig.DEBUG){
+                    Log.i("WebViewUtil", "onReceivedError: "+errorCode+" "+description+" "+failingUrl);
                 }
             }
 
@@ -150,6 +153,11 @@ public class WebViewUtil {
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if(BuildConfig.DEBUG){
+                        Log.i("WebViewUtil", "onReceivedError: "+error.getErrorCode()+" "+error.getDescription()+" "+request.getUrl());
+                    }
+                }
             }
 
             @TargetApi(android.os.Build.VERSION_CODES.M)
@@ -188,7 +196,20 @@ public class WebViewUtil {
                 String schema = uri.getScheme();
                 if (schema != null) {
                     if (schema.contains("http") || schema.contains("https")) {  //处理http和https开头的url
-                        view.loadUrl(url);
+                        if(BuildConfig.DEBUG){
+                            Log.i("WebViewUtil", "loadUrl: "+url);
+                        }
+                        if (override2Browser) {
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            } catch (Exception e) {
+                                view.loadUrl(url);
+                            }
+                        } else {
+                            view.loadUrl(url);
+                        }
                         return true;
                     } else {
                         try {
@@ -220,7 +241,20 @@ public class WebViewUtil {
                 String schema = uri.getScheme();
                 if (schema != null) {
                     if (schema.contains("http") || schema.contains("https")) {  //处理http和https开头的url
-                        view.loadUrl(url);
+                        if(BuildConfig.DEBUG){
+                            Log.i("WebViewUtil", "loadUrl: "+url);
+                        }
+                        if(override2Browser){
+                            try {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            } catch (Exception e) {
+                                view.loadUrl(url);
+                            }
+                        }else{
+                            view.loadUrl(url);
+                        }
                         return true;
                     }
                     if (schema.startsWith("market")) {

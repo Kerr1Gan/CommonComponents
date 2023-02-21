@@ -139,7 +139,7 @@ class WebViewFragment : Fragment() {
                     progressBar?.progress = newProgress
                 }
             }
-        })
+        },false)
         mWebView?.visibility = View.VISIBLE
         progressBar = view?.findViewById(R.id.pb_loading)
 //        mWebView?.webViewClient = object : SimpleWebViewClient() {
